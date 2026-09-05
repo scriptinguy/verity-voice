@@ -16,7 +16,7 @@ app.add_middleware(
 )
 
 # Read environment variables (Fallback to hardcoded defaults if not provided)
-FISH_API_KEY = os.getenv("FISH_API_KEY", "sk-fish-swEb8ehdT9k6lNxaS2zBXpAkwQQ9YfLneXS9mioFHqs")
+FISH_API_KEY = os.getenv("FISH_API_KEY", "sk-fish-wG_FoD-dPFfkW5mi51JEIrIkxU3pDJb8v-nQnhbmWC0")
 DEFAULT_VOICE_ID = os.getenv("DEFAULT_VOICE_ID", "8d21b053e2804e2a890e1cf62f267b6f")
 
 # Simple in-memory cache to save API credits on repeated dialogue
