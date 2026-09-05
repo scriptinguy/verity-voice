@@ -43,10 +43,10 @@ async def generate_tts(data: TTSRequest):
     if cache_key in AUDIO_CACHE:
         return Response(content=AUDIO_CACHE[cache_key], media_type="audio/mpeg")
 
-    headers = {
+        headers = {
         "Authorization": f"Bearer {FISH_API_KEY}",
         "Content-Type": "application/json",
-        "model": data.model
+        "model": "s2.1-pro"  # Use s2.1-pro or s2-pro
     }
 
     payload = {
@@ -55,6 +55,7 @@ async def generate_tts(data: TTSRequest):
         "format": "mp3",
         "latency": "normal"
     }
+
 
     async with httpx.AsyncClient(timeout=15.0) as client:
         try:
