@@ -36,17 +36,18 @@ async def generate_tts(data: TTSRequest):
     if not data.text or not data.text.strip():
         raise HTTPException(status_code=400, detail="Text parameter cannot be empty.")
 
+    if not FISH_API_KEY:
+        raise HTTPException(status_code=500, detail="FISH_API_KEY is not configured on Render.")
+
     voice_id = data.reference_id or DEFAULT_VOICE_ID
     cache_key = f"{voice_id}:{data.text.strip().lower()}"
 
-    # Return cached audio if previously generated
     if cache_key in AUDIO_CACHE:
         return Response(content=AUDIO_CACHE[cache_key], media_type="audio/mpeg")
 
-        headers = {
+    headers = {
         "Authorization": f"Bearer {FISH_API_KEY}",
-        "Content-Type": "application/json",
-        "model": "s2.1-pro"  # Use s2.1-pro or s2-pro
+        "Content-Type": "application/json"
     }
 
     payload = {
@@ -55,7 +56,6 @@ async def generate_tts(data: TTSRequest):
         "format": "mp3",
         "latency": "normal"
     }
-
 
     async with httpx.AsyncClient(timeout=15.0) as client:
         try:
@@ -72,6 +72,8 @@ async def generate_tts(data: TTSRequest):
         AUDIO_CACHE[cache_key] = audio_bytes
         return Response(content=audio_bytes, media_type="audio/mpeg")
     else:
+        # Prints the actual Fish Audio error into your Render logs
+        print(f"Fish Audio Error {response.status_code}: {response.text}")
         raise HTTPException(
             status_code=response.status_code,
             detail=f"Fish Audio Error ({response.status_code}): {response.text}"
